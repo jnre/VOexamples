@@ -13,8 +13,8 @@ using std::endl;
 
 const char* keys =
     "{ help h |                    | Print help message.}"
-    "{@input0 | ./modelFactoryDataSet/00.png | image 00.}"
-    "{@input1 | ./modelFactoryDataSet/01.png | image 01.}";
+    "{@input0 | ../modelFactoryDataSet/00.png | image 00.}"
+    "{@input1 | ../modelFactoryDataSet/01.png | image 01.}";
 
 int main(int argc, char** argv)
 {
@@ -77,6 +77,7 @@ int main(int argc, char** argv)
     //-- Show detected (drawn) keypoints
     imshow("orb match", img_matches);
     imwrite("orb_matchFlann.png", img_matches);
+    //imwrite("orb_matchBrute.png", img_matches);
     //cout << keypoints[1].pt.x << endl;
     waitKey();
     return 0;

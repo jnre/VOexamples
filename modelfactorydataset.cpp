@@ -13,7 +13,7 @@ int main(int argc, char** argv)
     
     //Size winSize(50,50);
     string model = "model factory";
-    namedWindow(model, 0);
+    namedWindow(model, 1);
     int i = 0;
 
     for(;;)

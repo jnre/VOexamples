@@ -14,8 +14,8 @@ using std::endl;
 
 const char* keys =
     "{ help h |                    | Print help message.}"
-    "{@input0 | ./modelFactoryDataSet/00.png | image 00.}"
-    "{@input1 | ./modelFactoryDataSet/01.png | image 01.}";
+    "{@input0 | ../modelFactoryDataSet/00.png | image 00.}"
+    "{@input1 | ../modelFactoryDataSet/01.png | image 01.}";
 
 int main(int argc, char** argv)
 {

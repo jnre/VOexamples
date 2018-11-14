@@ -15,11 +15,11 @@ using std::endl;
 
 const char* keys =
     "{ help h |                    | Print help message.}"
-    "{@input0 | ./testfilesdataset/10.png | image 00.}"
-    "{@input1 | ./testfilesdataset/11.png | image 01.}"
-    "{@input2 | ./testfilesdataset/12.png | image 02.}"
-    "{@input3 | ./testfilesdataset/13.png | image 03.}"
-    "{@input4 | ./testfilesdataset/13.png | image 04.}";
+    "{@input0 | ../testfilesdataset/10.png | image 00.}"
+    "{@input1 | ../testfilesdataset/11.png | image 01.}"
+    "{@input2 | ../testfilesdataset/12.png | image 02.}"
+    "{@input3 | ../testfilesdataset/13.png | image 03.}"
+    "{@input4 | ../testfilesdataset/14.png | image 04.}";
 
 int main(int argc, char** argv)
 {
@@ -62,7 +62,7 @@ int main(int argc, char** argv)
     orbDetector -> detectAndCompute(grey0, noArray(), keypoint0, descriptors0);
     orbDetector -> detectAndCompute(grey1, noArray(), keypoint1, descriptors1);
 
-    //orb u got to use flann+ lsh(no idea)(42-54)(convert to 32f) or brute force +hamming (59-61,!42-50)    
+    //orb u got to use flann+ lsh(no idea)(66-76)(convert to 32f) or brute force +hamming (80-82,!66-76)    
     //convert descriptors to cv_32f for usage in flannbased matching
     /*if(descriptors0.type()!=CV_32F) {
     descriptors0.convertTo(descriptors0, CV_32F);
@@ -121,7 +121,7 @@ int main(int argc, char** argv)
     //imshow("FINAL",stich);
 
     
-    //for checkerboard
+    //for checkerboard, using Pnp solver
     std::vector<Point2f> corners0, corners1;
     Size patternSize(9,6);
     bool found0 = findChessboardCorners(grey0,patternSize,corners0);    //find pixel of corners
@@ -146,6 +146,7 @@ int main(int argc, char** argv)
         line(img_draw_matches1, corners0[i],end,color,2); //draw line from corners0 to end point, thick=2
     }
     imshow("Draw matches",img_draw_matches1);
+    imwrite("Draw matches.png",img_draw_matches1);
     std::vector<Point3f> objectPoints;                                              //getting the objectPoints
     float squareSize = 24.41;
     for( int i = 0; i < patternSize.height; i++ )
@@ -164,6 +165,7 @@ int main(int argc, char** argv)
     cv::drawFrameAxes(grey1_copy_pose, cameraMatrix, distCoeffs, rvec1, tvec1, 2*squareSize);
     hconcat(grey0_copy_pose, grey1_copy_pose, img_draw_poses);
     imshow("Chessboard poses", img_draw_poses);
+    imwrite("Chessboard poses.png", img_draw_poses);
     //convert vector of rvec0 and rvec1 to matrix form.
     Mat R0,R1;
     Rodrigues(rvec0, R0);
@@ -180,6 +182,7 @@ int main(int argc, char** argv)
     Mat origin0 = R0*origin +tvec0;
     cout << "normal0: " << normal0 <<endl; 
     double d_inv0 = 1.0/normal0.dot(origin0);   //normal unit vector dot product distance
+    cout <<" d_inv0: " << d_inv0 <<endl;
     Mat homography_euclidean = R_0to1 + d_inv0* T_0to1*normal.t();
     Mat homography = cameraMatrix * homography_euclidean * cameraMatrix.inv();
     homography /= homography.at<double>(2,2);

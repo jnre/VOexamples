@@ -1,4 +1,6 @@
 #include <iostream>
+#include "opencv2/core.hpp"
+#ifdef HAVE_OPENCV_XFEATURES2D
 #include <opencv2/highgui.hpp>
 #include "opencv2/xfeatures2d.hpp" 
 #include "opencv2/features2d.hpp"
@@ -10,7 +12,7 @@ using namespace cv;
 
 int main(int argc, const char* argv[])
 {
-    CommandLineParser parser( argc, argv, "{@input | ./modelFactoryDataSet/01.png | input image}" );
+    CommandLineParser parser( argc, argv, "{@input | ../modelFactoryDataSet/01.png | input image}" );
     Mat src = imread( parser.get<String>( "@input" ));
     if ( src.empty() )
     {
@@ -37,3 +39,10 @@ int main(int argc, const char* argv[])
 
     return 0;
 }
+#else
+int main()
+{
+    std::cout << "This tutorial code needs the xfeatures2d contrib module to be run." << std::endl;
+    return 0;
+}
+#endif 
