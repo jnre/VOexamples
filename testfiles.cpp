@@ -30,7 +30,7 @@ int main(int argc, char** argv)
         if( c == 's'){        //keypress s to take photos
             
             char filename[100];
-            sprintf(filename,"/home/joseph/VOexamples/testfilesdataset/2%d.png",*pt_i);
+            sprintf(filename,"/home/joseph/VOexamples/testfilesdataset/3%d.png",*pt_i);
             printf("write to file %d \n",*pt_i);
             imwrite(filename, image); //write gray or image to filename
             i++;

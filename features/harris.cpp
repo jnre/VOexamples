@@ -21,7 +21,7 @@ const string corners_window = "Corners detected";
 
 int main( int argc, char** argv)
 {
-    CommandLineParser parser( argc, argv, "{@input | ./modelFactoryDataSet/01.png | input image}");
+    CommandLineParser parser( argc, argv, "{@input | ../modelFactoryDataSet/01.png | input image}");
     src = imread( parser.get<String>("@input"));
     if (src.empty())
     {

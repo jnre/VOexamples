@@ -90,7 +90,7 @@ int main(int argc, char** argv)
     cvtColor(grey1, grey1_copy_pose, COLOR_GRAY2BGR); 
     computeCorrespondEpilines(corners0,1,F,epilines0);
     computeCorrespondEpilines(corners1,2,F,epilines1);
-    cout <<"epilines0: " <<epilines0 <<endl;
+    //cout <<"epilines0: " <<epilines0 <<endl;
     RNG rng(12345);
 
 

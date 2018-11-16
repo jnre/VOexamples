@@ -17,8 +17,8 @@ using std::endl;
 
 const char* keys =
     "{ help h |                    | Print help message.}"
-    "{@input0 | ./testfilesdataset/20.png | image 00.}"
-    "{@input1 | ./testfilesdataset/21.png | image 01.}";
+    "{@input0 | ../testfilesdataset/20.png | image 00.}"
+    "{@input1 | ../testfilesdataset/21.png | image 01.}";
 
 int main(int argc, char** argv)
 {
@@ -95,7 +95,9 @@ int main(int argc, char** argv)
     }
     
     imshow("epilines for 0",grey0_copy_pose);
+    imwrite("epilinesFor0.png",grey0_copy_pose);
     imshow("epilines for 1",grey1_copy_pose);
+    imwrite("epilinesFor1.png",grey1_copy_pose);
     waitKey();
     
     return 0;
