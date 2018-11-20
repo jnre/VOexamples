@@ -5,6 +5,7 @@
 #include "opencv2/xfeatures2d.hpp" 
 #include "opencv2/features2d.hpp"
 #include "opencv2/imgproc.hpp"
+#include "opencv2/calib3d.hpp"
 
 using namespace cv;
 using namespace cv::xfeatures2d;
@@ -76,15 +77,25 @@ int main(int argc, char** argv)
     //query for matched points
     for(int i =0;i<good_matches.size();i++)
     {
-        //cout<< "good matches index 0: "<<good_matches[i].trainIdx<<endl;
-        //cout<< "keypoint1: " <<keypoint0[good_matches[i].trainIdx]<<endl;        
+               
         goodmatchespoints0.push_back(keypoint0[good_matches[i].queryIdx].pt);        
         cout<<"goodmatches pt0:" << goodmatchespoints0[i] <<endl;
         goodmatchespoints1.push_back(keypoint1[good_matches[i].trainIdx].pt);
         cout<<"goodmatches pt1: " <<goodmatchespoints1[i] <<endl;
-        //cout<<" good matches in 1: "<<good_matches[i].queryIdx<<endl;
-        //cout<<" good match yes no and operator? " <<good_matches[i].imgIdx<<endl;
+        
     }
+
+    Mat camMatrixIE0 =(Mat_<double>(3,4) << 730.4,0.0,320.0,0.0,0.0,730.4,240.0,0.0,0.0,0.0,1.0,0.0);
+    Mat camMatrixIE1 =(Mat_<double>(3,4) << 730.4,0.0,320.0,7304.0,0.0,730.4,240.0,0.0,0.0,0.0,1.0,0.0);
+    Mat pnts3D(4,good_matches.size(),CV_64F);
+    
+    cv::triangulatePoints(camMatrixIE0,camMatrixIE1,goodmatchespoints0,goodmatchespoints1,pnts3D);
+    //cout<<"camMatrixIE0: " << camMatrixIE0.row(1) <<endl;
+    //cout<<"pnts3D: " << pnts3D.reshape(4,1) <<endl;
+    std::vector<Point3f> worldpnts3D;
+
+    //convertPointsFromHomogeneous(pnts3D.reshape(4, 1), worldpnts3D);
+
     //-- Draw Matches
     Mat img_matches;
     drawMatches( grey0,keypoint0,grey1,keypoint1, good_matches,img_matches,Scalar::all(-1),Scalar::all(-1),std::vector<char>(),DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
