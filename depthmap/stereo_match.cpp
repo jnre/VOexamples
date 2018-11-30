@@ -14,6 +14,7 @@
 #include "opencv2/core/utility.hpp"
 
 #include <stdio.h>
+#include <iostream>
 
 using namespace cv;
 
@@ -59,10 +60,11 @@ int main(int argc, char** argv)
     Ptr<StereoBM> bm = StereoBM::create(16,9);
     Ptr<StereoSGBM> sgbm = StereoSGBM::create(0,16,3);
     cv::CommandLineParser parser(argc, argv,
-        "{@arg1|../testfilesdataset/30.png|}"
-        "{@arg2|../testfilesdataset/31.png|}{help h||}{algorithm||}"
+        "{@arg1|../sparsepointcloudmap/left01.jpg|}"
+        "{@arg2|../sparsepointcloudmap/right01.jpg|}{help h||}{algorithm||}"
         "{max-disparity|16|}{blocksize|3|}{no-display||}"
-        "{scale|1|}{i||}{e||}{o||}{p||}");
+        "{scale|1|}{i| ./intrinsics.yml|}"
+        "{e|./extrinsics.yml|}{o|./disparity.jpg|}{p|./pointcloud.ply|}");
     if(parser.has("help"))
     {
         print_help();
@@ -163,7 +165,8 @@ int main(int argc, char** argv)
     Size img_size = img1.size();
 
     Rect roi1, roi2;
-    Mat Q;
+    //Mat Q;
+    Mat R, T, R1, P1, R2, P2, Q;
 
     if( !intrinsic_filename.empty() )
     {
@@ -191,12 +194,18 @@ int main(int argc, char** argv)
             return -1;
         }
 
-        Mat R, T, R1, P1, R2, P2;
+        
         fs["R"] >> R;
         fs["T"] >> T;
+        fs["R1"]>>R1;
+        fs["R2"]>>R2;
+        fs["P1"]>>P1;
+        fs["P2"]>>P2;
+        fs["Q"]>> Q;
 
-        stereoRectify( M1, D1, M2, D2, img_size, R, T, R1, R2, P1, P2, Q, CALIB_ZERO_DISPARITY, -1, img_size, &roi1, &roi2 );
-
+        
+        
+        /*
         Mat map11, map12, map21, map22;
         initUndistortRectifyMap(M1, D1, R1, P1, img_size, CV_16SC2, map11, map12);
         initUndistortRectifyMap(M2, D2, R2, P2, img_size, CV_16SC2, map21, map22);
@@ -206,7 +215,7 @@ int main(int argc, char** argv)
         remap(img2, img2r, map21, map22, INTER_LINEAR);
 
         img1 = img1r;
-        img2 = img2r;
+        img2 = img2r;*/
     }
 
     numberOfDisparities = numberOfDisparities > 0 ? numberOfDisparities : ((img_size.width/8) + 15) & -16;
@@ -284,8 +293,9 @@ int main(int argc, char** argv)
         printf("storing the point cloud...");
         fflush(stdout);
         Mat xyz;
+        std::cout<<"Q: " << Q<< std::endl;
         reprojectImageTo3D(disp, xyz, Q, true);
-        saveXYZ(point_cloud_filename.c_str(), xyz);
+        saveXYZ(point_cloud_filename.c_str(), xyz);//doesnt save idk why
         printf("\n");
     }
 

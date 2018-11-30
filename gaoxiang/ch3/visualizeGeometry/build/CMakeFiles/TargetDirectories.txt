@@ -1,0 +1,3 @@
+/home/joseph/VOexamples/gaoxiang/ch3/visualizeGeometry/build/CMakeFiles/rebuild_cache.dir
+/home/joseph/VOexamples/gaoxiang/ch3/visualizeGeometry/build/CMakeFiles/edit_cache.dir
+/home/joseph/VOexamples/gaoxiang/ch3/visualizeGeometry/build/CMakeFiles/visualizeGeometry.dir

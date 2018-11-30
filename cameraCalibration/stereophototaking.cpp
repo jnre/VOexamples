@@ -34,8 +34,8 @@ int main(int argc, char** argv)
             
             char filename0[100];
             char filename1[100];
-            sprintf(filename0,"/home/joseph/VOexamples/cameraCalibration/data/left0%d.jpg",*pt_i);
-            sprintf(filename1,"/home/joseph/VOexamples/cameraCalibration/data/right0%d.jpg",*pt_i);
+            sprintf(filename0,"/home/joseph/VOexamples/cameraCalibration/data/left%02d.jpg",*pt_i);
+            sprintf(filename1,"/home/joseph/VOexamples/cameraCalibration/data/right%02d.jpg",*pt_i);
 
             printf("write to file %d \n",*pt_i);
             imwrite(filename0, image0); //write gray or image to filename

@@ -32,7 +32,7 @@ int main(int argc, char** argv)
     Mat grey0, grey1, descriptors0, descriptors1;
     cvtColor(src0,grey0, COLOR_BGR2GRAY);
     cvtColor(src1,grey1, COLOR_BGR2GRAY);
-
+    
     //ORB work? haha
     Ptr<ORB> orbDetector = ORB::create();
     std::vector<KeyPoint> keypoint0, keypoint1;
@@ -51,7 +51,7 @@ int main(int argc, char** argv)
     cv::FlannBasedMatcher matcher;
     std::vector<std::vector<DMatch> > matches;
     matcher.knnMatch(descriptors0,descriptors1,matches,2);
-
+    
     //flann matcher(hamming distance)
     //orb u got to use flann+ lsh(no idea)(42-53) or brute force +hamming (57-59,!42-50)
     //Ptr<DescriptorMatcher> matcher = DescriptorMatcher::create("BruteForce-Hamming");
