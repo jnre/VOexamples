@@ -1,0 +1,3 @@
+/home/joseph/VOexamples/sparsepointcloudmap/build/CMakeFiles/edit_cache.dir
+/home/joseph/VOexamples/sparsepointcloudmap/build/CMakeFiles/rebuild_cache.dir
+/home/joseph/VOexamples/sparsepointcloudmap/build/CMakeFiles/triangulation.dir

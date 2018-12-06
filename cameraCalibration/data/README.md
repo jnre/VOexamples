@@ -1,3 +1,5 @@
+stereo calibration to get intrinsic and extrinsic values for correlation between both camera
+
 calculate intrinsic extrinsic parameters of stereo cameras.
 M1-intrinsic cameraMatrix of first camera(left)
 D1-intrinsic distortion coefficient of first camera

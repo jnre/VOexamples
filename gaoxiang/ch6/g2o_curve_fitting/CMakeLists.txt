@@ -22,5 +22,5 @@ add_executable( curve_fitting main.cpp )
 # 与G2O和OpenCV链接
 target_link_libraries( curve_fitting 
     ${OpenCV_LIBS}
-    ${G2O_CORE_LIBRARY} ${G2O_STUFF_LIBRARY}
+    ${G2O_CORE_LIBRARY} ${G2O_STUFF_LIBRARY} 
 )
