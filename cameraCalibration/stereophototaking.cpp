@@ -27,6 +27,8 @@ int main(int argc, char** argv)
         cap1 >> frame1;
         frame1.copyTo(image1);
         //cvtColor(image, gray, COLOR_BGR2GRAY); //convert to gray
+        //namedWindow("left camera", WINDOW_NORMAL);
+        //namedWindow("right camera", WINDOW_NORMAL);
         imshow("left camera", image0); //show the image or gray image
         imshow("right camera", image1);
         char c =(char)waitKey(30); //wait 30ms for next frame

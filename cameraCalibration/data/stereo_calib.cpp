@@ -50,7 +50,7 @@ static int print_help()
             "         matrix separately) stereo. \n"
             " Calibrate the cameras and display the\n"
             " rectified results along with the computed disparity images.   \n" << endl;
-    cout << "Usage:\n ./stereo_calib -w=<board_width default=9> -h=<board_height default=6> -s=<square_size default=24.41> <image list XML/YML file default=./stereo_calib.xml>\n" << endl;
+    cout << "Usage:\n ./stereo_calib -w=<board_width default=9> -h=<board_height default=6> -s=<square_size default=0.02441> <image list XML/YML file default=./stereo_calib.xml>\n" << endl;
     return 0;
 }
 
@@ -176,7 +176,7 @@ StereoCalib(const vector<string>& imagelist, Size boardSize, float squareSize, b
                     CALIB_USE_INTRINSIC_GUESS +
                     CALIB_SAME_FOCAL_LENGTH +
                     CALIB_RATIONAL_MODEL +
-                    CALIB_FIX_K3 + CALIB_FIX_K4 + CALIB_FIX_K5,
+                    CALIB_FIX_K3 + CALIB_FIX_K4 + CALIB_FIX_K5 + CALIB_FIX_K6,  //calib_fix_k6 new
                     TermCriteria(TermCriteria::COUNT+TermCriteria::EPS, 100, 1e-5) );
     cout << "done with RMS error=" << rms << endl;
 
@@ -277,6 +277,7 @@ StereoCalib(const vector<string>& imagelist, Size boardSize, float squareSize, b
     //Precompute maps for cv::remap()
     initUndistortRectifyMap(cameraMatrix[0], distCoeffs[0], R1, P1, imageSize, CV_16SC2, rmap[0][0], rmap[0][1]);
     initUndistortRectifyMap(cameraMatrix[1], distCoeffs[1], R2, P2, imageSize, CV_16SC2, rmap[1][0], rmap[1][1]);
+    
 
     Mat canvas;
     double sf;
