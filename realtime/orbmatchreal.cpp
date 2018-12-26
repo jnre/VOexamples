@@ -46,12 +46,6 @@ int main(int argc, char** argv)
         cap1>>frame1;        
         cvtColor(frame0,grey0, COLOR_BGR2GRAY);
         cvtColor(frame1,grey1, COLOR_BGR2GRAY);
-    
-        //ORB work? haha
-        Ptr<ORB> orbDetector = ORB::create();
-        std::vector<KeyPoint> keypoint0, keypoint1;
-        orbDetector -> detectAndCompute(grey0, noArray(), keypoint0, descriptors0);
-        orbDetector -> detectAndCompute(grey1, noArray(), keypoint1, descriptors1);
 
         //for camera calibration        
         FileStorage fs("./intrinsics.yml", FileStorage::READ);
@@ -80,12 +74,32 @@ int main(int argc, char** argv)
         fs["P2"]>>P2;
         fs["Q"]>>Q;
 
-        Size imageSize = grey0.size();
-        Mat rmap[2][2];
-        initUndistortRectifyMap(M1, D1, R1, P1, imageSize, CV_16SC2, rmap[0][0], rmap[0][1]);
-        initUndistortRectifyMap(M2, D2, R2, P2, imageSize, CV_16SC2, rmap[1][0], rmap[1][1]);
+        Mat rmap[2][2],newgrey0,canvas,newgrey1;
+        double sf;
+        int w,h;
+        sf = 600./MAX(grey0.size().width, grey0.size().height);
+        w = cvRound(grey0.size().width*sf);
+        h = cvRound(grey0.size().height*sf);
+        canvas.create(h,w*2,CV_8UC1); //creating window
+        
+        initUndistortRectifyMap(M1,D1,R1,P1,grey0.size(),CV_32FC1,rmap[0][0],rmap[0][1]);
+        initUndistortRectifyMap(M2,D2,R2,P2,grey1.size(),CV_32FC1,rmap[1][0],rmap[1][1]);
+        remap(grey0,newgrey0,rmap[0][0],rmap[0][1],INTER_LINEAR);
+        Mat canvasPart0 = canvas(Rect(0,0,w,h)); //drawing box for img0
+        resize(newgrey0, canvasPart0,canvasPart0.size(),0,0,INTER_AREA);  //map newgrey into canvas for img 0
+    
+        remap(grey1,newgrey1,rmap[1][0],rmap[1][1],INTER_LINEAR);
+        Mat canvasPart1 = canvas(Rect(w,0,w,h));
+        resize(newgrey1, canvasPart1,canvasPart1.size(),0,0,INTER_AREA);
+
+        //ORB work? haha
+        Ptr<ORB> orbDetector = ORB::create();
+        std::vector<KeyPoint> keypoint0, keypoint1;
+        orbDetector -> detectAndCompute(newgrey0, noArray(), keypoint0, descriptors0);
+        orbDetector -> detectAndCompute(newgrey1, noArray(), keypoint1, descriptors1);
+        
         //convert descriptors to cv_32f for usage in flannbased matching
-        /*if(descriptors0.type()!=CV_32F) {
+        if(descriptors0.type()!=CV_32F) {
         descriptors0.convertTo(descriptors0, CV_32F);
         }
 
@@ -96,12 +110,11 @@ int main(int argc, char** argv)
         cv::FlannBasedMatcher matcher;
         std::vector<std::vector<DMatch> > matches;
         matcher.knnMatch(descriptors0,descriptors1,matches,2);
-        */
-        //flann matcher(hamming distance)
-        //orb u got to use flann+ lsh(no idea)(42-53) or brute force +hamming (57-59,!42-50)
-        Ptr<DescriptorMatcher> matcher = DescriptorMatcher::create("BruteForce-Hamming");
-        std::vector<std::vector<DMatch> > matches;
-        matcher->knnMatch(descriptors0,descriptors1,matches,2);
+        
+        //OR BRUTEFORCE
+        //Ptr<DescriptorMatcher> matcher = DescriptorMatcher::create("BruteForce-Hamming");
+        //std::vector<std::vector<DMatch> > matches;
+        //matcher->knnMatch(descriptors0,descriptors1,matches,2);
 
         //filter using low's ratio test, other alternative is to use RANSAC
         const float ratio_thresh = 0.7f;
@@ -140,11 +153,12 @@ int main(int argc, char** argv)
 
         //-- Draw Matches
         Mat img_matches;
-        drawMatches( grey0,keypoint0,grey1,keypoint1, inline_matches,img_matches,Scalar::all(-1),Scalar::all(-1),std::vector<char>(),DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
+        drawMatches( newgrey0,keypoint0,newgrey1,keypoint1, inline_matches,img_matches,Scalar::all(-1),Scalar::all(-1),std::vector<char>(),DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
+        cv::resize(img_matches,img_matches, cv::Size(w*2,h),0,0,CV_INTER_LINEAR);
 
         //cout<< "size of img_matches" << img_matches.size()<<endl;
         //-- Show detected (drawn) keypoints
-        namedWindow("orb match", WINDOW_NORMAL);
+        //namedWindow("orb match", WINDOW_NORMAL);
         //resizeWindow("orb match", 2560,960);
         imshow("orb match", img_matches);
         imwrite("orb_matchFlannreal.png", img_matches);
@@ -162,6 +176,8 @@ int main(int argc, char** argv)
             Mat newworld_mat = world_mat.reshape(1);    //newworld_mat with correct shape 
             cout<<"worldpnts: " <<newworld_mat<<endl;
         }
+
+        //process for previousframe        
         if(previousframe0.data)
         {
                        
@@ -170,14 +186,83 @@ int main(int argc, char** argv)
             Mat contpreviousframe(sz0.height,sz0.width+sz1.width,CV_8UC1);
             previousframe0.copyTo(contpreviousframe(Rect(0,0,sz0.width,sz0.height)));
             previousframe1.copyTo(contpreviousframe(Rect(sz0.width,0,sz1.width,sz1.height)));
-            namedWindow("previousframe", WINDOW_NORMAL);            
-            imshow("previousframe",contpreviousframe);
+            cv::resize(contpreviousframe,contpreviousframe, cv::Size(w*2,h),0,0,CV_INTER_LINEAR);            
+            //namedWindow("previousframe", WINDOW_NORMAL);            
+            
+            Ptr<ORB> orbDetector = ORB::create();
+            std::vector<KeyPoint> keypoint0, keypoint1;
+            orbDetector -> detectAndCompute(previousframe0, noArray(), keypoint0, descriptors0);
+            orbDetector -> detectAndCompute(previousframe1, noArray(), keypoint1, descriptors1);
+            
+            //convert descriptors to cv_32f for usage in flannbased matching
+            if(descriptors0.type()!=CV_32F) {
+            descriptors0.convertTo(descriptors0, CV_32F);
+            }
+
+            if(descriptors1.type()!=CV_32F) {
+            descriptors1.convertTo(descriptors1, CV_32F);
+            }
+            cv::FlannBasedMatcher matcher;
+            std::vector<std::vector<DMatch> > matches;
+            matcher.knnMatch(descriptors0,descriptors1,matches,2);
+
+            const float ratio_thresh = 0.7f;
+            std::vector<DMatch> good_matches,inline_matches;
+            for (size_t i = 0; i < matches.size(); i++)
+            {
+                if (matches[i][0].distance < ratio_thresh * matches[i][1].distance)
+                {
+                    good_matches.push_back(matches[i][0]);
+                }
+            }
+
+            for(int i =0; i< good_matches.size();i++)
+            {
+                if(fabs((keypoint0[good_matches[i].queryIdx].pt.y)-(keypoint1[good_matches[i].trainIdx].pt.y))<=20.0)
+                {
+                    if((keypoint0[good_matches[i].queryIdx].pt.x)>(keypoint1[good_matches[i].trainIdx].pt.x))
+                    {
+                        inline_matches.push_back(good_matches[i]);
+                    }
+                }
+            }
+
+            //keypoint0 refers to img1, with queryIdx refering to matchings in img1        
+            std::vector<Point2f> goodmatchespoints0, goodmatchespoints1;
+
+            //query for keypoints of matches
+            for(int i=0;i<inline_matches.size();i++)
+            {
+                goodmatchespoints0.push_back(keypoint0[inline_matches[i].queryIdx].pt); 
+                goodmatchespoints1.push_back(keypoint1[inline_matches[i].trainIdx].pt);        
+                //cout<<"goodmatches pt0:" << goodmatchespoints0[i] <<endl;
+                //cout<<"goodmatches pt1: " <<goodmatchespoints1[i] <<endl;
+            }
+
+
+            //-- Draw Matches
+            Mat img_matchesprev;
+            drawMatches( previousframe0,keypoint0,previousframe1,keypoint1, inline_matches,img_matchesprev,Scalar::all(-1),Scalar::all(-1),std::vector<char>(),DrawMatchesFlags::NOT_DRAW_SINGLE_POINTS);
+            cv::resize(img_matchesprev,img_matchesprev, cv::Size(w*2,h),0,0,CV_INTER_LINEAR);
+            Mat pnts3D(1,goodmatchespoints0.size(),CV_64FC4);
+            //show triangulated points
+            if(!goodmatchespoints0.empty())
+            {        
+                triangulatePoints(P1,P2,goodmatchespoints0,goodmatchespoints1, pnts3D); //gives (nx4), but displayed as 1 since C4
+                pnts3D=pnts3D.t(); //convert to single channel (4xn)
+                Mat world_mat;
+                convertPointsFromHomogeneous(pnts3D,world_mat); //convert to 3xn displayed as 1 since C3
+                Mat newworld_mat = world_mat.reshape(1);    //newworld_mat with correct shape 
+                cout<<"worldpntsprevious: " <<newworld_mat<<endl;
+            }
+        
+            imshow("previousframe",img_matchesprev);
              
         }
 
 
-        previousframe0 = grey0.clone();
-        previousframe1 = grey1.clone();      
+        previousframe0 = newgrey0.clone();
+        previousframe1 = newgrey1.clone();      
         waitKey(30);
         
     }

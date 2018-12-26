@@ -111,17 +111,17 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named triangulation
+# Target rules for targets named orbstereo
 
 # Build rule for target.
-triangulation: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 triangulation
-.PHONY : triangulation
+orbstereo: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 orbstereo
+.PHONY : orbstereo
 
 # fast build rule for target.
-triangulation/fast:
-	$(MAKE) -f CMakeFiles/triangulation.dir/build.make CMakeFiles/triangulation.dir/build
-.PHONY : triangulation/fast
+orbstereo/fast:
+	$(MAKE) -f CMakeFiles/orbstereo.dir/build.make CMakeFiles/orbstereo.dir/build
+.PHONY : orbstereo/fast
 
 orbstereo.o: orbstereo.cpp.o
 
@@ -129,7 +129,7 @@ orbstereo.o: orbstereo.cpp.o
 
 # target to build an object file
 orbstereo.cpp.o:
-	$(MAKE) -f CMakeFiles/triangulation.dir/build.make CMakeFiles/triangulation.dir/orbstereo.cpp.o
+	$(MAKE) -f CMakeFiles/orbstereo.dir/build.make CMakeFiles/orbstereo.dir/orbstereo.cpp.o
 .PHONY : orbstereo.cpp.o
 
 orbstereo.i: orbstereo.cpp.i
@@ -138,7 +138,7 @@ orbstereo.i: orbstereo.cpp.i
 
 # target to preprocess a source file
 orbstereo.cpp.i:
-	$(MAKE) -f CMakeFiles/triangulation.dir/build.make CMakeFiles/triangulation.dir/orbstereo.cpp.i
+	$(MAKE) -f CMakeFiles/orbstereo.dir/build.make CMakeFiles/orbstereo.dir/orbstereo.cpp.i
 .PHONY : orbstereo.cpp.i
 
 orbstereo.s: orbstereo.cpp.s
@@ -147,7 +147,7 @@ orbstereo.s: orbstereo.cpp.s
 
 # target to generate assembly for a file
 orbstereo.cpp.s:
-	$(MAKE) -f CMakeFiles/triangulation.dir/build.make CMakeFiles/triangulation.dir/orbstereo.cpp.s
+	$(MAKE) -f CMakeFiles/orbstereo.dir/build.make CMakeFiles/orbstereo.dir/orbstereo.cpp.s
 .PHONY : orbstereo.cpp.s
 
 # Help Target
@@ -158,7 +158,7 @@ help:
 	@echo "... depend"
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
-	@echo "... triangulation"
+	@echo "... orbstereo"
 	@echo "... orbstereo.o"
 	@echo "... orbstereo.i"
 	@echo "... orbstereo.s"

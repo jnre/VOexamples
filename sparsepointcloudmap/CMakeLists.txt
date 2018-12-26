@@ -24,12 +24,12 @@ link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
 
 add_executable(
-  triangulation
+  orbstereo
   orbstereo.cpp
   )
 
 target_link_libraries(
-  triangulation
+  orbstereo
   ${OpenCV_LIBS}
   ${PCL_LIBRARIES} pcl_common
 )
