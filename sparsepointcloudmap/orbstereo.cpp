@@ -234,28 +234,28 @@ int main(int argc, char** argv)
 
     //pointcloud
     pcl::visualization::PCLVisualizer viewer("Viewer");
-    viewer.setBackgroundColor (255, 255, 255);
+    viewer.setBackgroundColor (0, 0, 0);
 
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZRGB>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
     cloud->points.resize(newworldmat.rows);
 
     for(int i = 0; i <newworldmat.rows; i++)
     {
-        pcl::PointXYZRGB &point = cloud->points[i];
+        pcl::PointXYZ &point = cloud->points[i];
         point.x = newworldmat.at<float>(i,0);
         point.y = -newworldmat.at<float>(i,1);
         point.z = -newworldmat.at<float>(i,2);
-        point.r = 0;
-        point.g = 0;
-        point.b = 255;
+        //point.r = 0;
+        //point.g = 0;
+        //point.b = 255;
         cout<<"pointcloud: " <<cloud->points[i] <<endl;
     }
     
     viewer.addPointCloud(cloud,"Triangulated Point Cloud");
-    viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE,3,"Triangulated Point Cloud");
+    viewer.setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE,5,"Triangulated Point Cloud");
     viewer.addCoordinateSystem(300.0);
     while (!viewer.wasStopped ()) {
-    viewer.spin();
+    viewer.spinOnce(100);
     }
 
 /*    fs.open("newworldmat01.yml", FileStorage::WRITE);
