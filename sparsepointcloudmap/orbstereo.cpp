@@ -26,8 +26,8 @@ using std::endl;
 
 const char* keys =
     "{ help h |                    | Print help message.}"
-    "{@input0 | ./newpoints/left01.jpg | left_image 01.}"
-    "{@input1 | ./newpoints/right01.jpg  | right_image 01.}";
+    "{@input0 | ./newpoints/l4.jpg | left_image 01.}"
+    "{@input1 | ./newpoints/r4.jpg  | right_image 01.}";
 
 int main(int argc, char** argv)
 {
@@ -112,7 +112,7 @@ int main(int argc, char** argv)
     resize(newgrey1, canvasPart1,canvasPart1.size(),0,0,INTER_AREA);
     
     imshow("canvas01",canvas);
-    imwrite("canvas01.jpg", canvas);
+    imwrite("c4.jpg", canvas);
 
     //ORB detector of points
     Ptr<ORB> orbDetector = ORB::create();
@@ -237,6 +237,9 @@ int main(int argc, char** argv)
     viewer.setBackgroundColor (255, 255, 255);
 
     pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    cloud->width = newworldmat.rows;
+    cloud->height = 1;
+    cloud->is_dense = false;
     cloud->points.resize(newworldmat.rows);
 
     for(int i = 0; i <newworldmat.rows; i++)
@@ -263,12 +266,12 @@ int main(int argc, char** argv)
         fs.release();
     }
 */
-    pcl::io::savePLYFile("test_pcd01.ply",*cloud);
+    pcl::io::savePCDFileASCII("t4.pcd",*cloud);
     //pcl::io::savePNGFile("te st_png03.png",*cloud,"rgb");
 
     //-- Show detected (drawn) keypoints
     imshow("orbmatchpoint", img_matches);
-    imwrite("newpoints01.jpg", img_matches);
+    imwrite("n4.jpg", img_matches);
 
     while (!viewer.wasStopped ()) {
     viewer.spinOnce(100);
