@@ -1,0 +1,3 @@
+/home/joseph/VOexamples/tracksparse/build/CMakeFiles/edit_cache.dir
+/home/joseph/VOexamples/tracksparse/build/CMakeFiles/rebuild_cache.dir
+/home/joseph/VOexamples/tracksparse/build/CMakeFiles/tracksparse.dir
